@@ -82,7 +82,7 @@ namespace HealthcareAppointmentApp.Data
             {
                 entity.ToTable("SPECIALITIES");
                 entity.Property(s => s.Id).HasColumnName("ID");
-                entity.Property(s => s.SpecialityName).HasColumnName("SPECIALITY_NAME");
+                entity.Property(s => s.SpecialityName).HasMaxLength(80).HasColumnName("SPECIALITY_NAME");
                 entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
@@ -103,7 +103,7 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(d => d.Address).HasMaxLength(50).HasColumnName("ADDRESS");
                 entity.Property(d => d.StreetNumber).HasColumnName("STREET_NUMBER");
                 entity.Property(d => d.PhoneNumber).HasMaxLength(20).HasColumnName("PHONE_NUMBER");
-                entity.Property(d => d.AppointmentDuration).HasColumnName("APPOINTMENT_DURATION");
+                entity.Property(d => d.AppointmentDuration).HasColumnName("APPOINTMENT_DURATION").HasDefaultValue(30);
                 entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
