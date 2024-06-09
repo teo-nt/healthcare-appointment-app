@@ -1,5 +1,6 @@
 
 using HealthcareAppointmentApp.Data;
+using HealthcareAppointmentApp.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -19,6 +20,7 @@ namespace HealthcareAppointmentApp
 
             var connString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<HealthCareDbContext>(options => options.UseSqlServer(connString));
+            builder.Services.AddRepositories();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
