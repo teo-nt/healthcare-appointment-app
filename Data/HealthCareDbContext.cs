@@ -60,7 +60,7 @@ namespace HealthcareAppointmentApp.Data
             {
                 entity.ToTable("PATIENTS");
                 entity.HasIndex(p => p.Lastname, "IX_P_LASTNAME");
-                entity.HasIndex(p => p.PhoneNumber, "UQ_PHONE_NUMBER").IsUnique();
+                entity.HasIndex(p => p.PhoneNumber, "UQ_P_PHONE_NUMBER").IsUnique();
                 entity.Property(p => p.Id).HasColumnName("ID");
                 entity.Property(p => p.Firstname).HasMaxLength(50).HasColumnName("FIRSTNAME");
                 entity.Property(p => p.Lastname).HasMaxLength(50).HasColumnName("LASTNAME");
@@ -94,6 +94,7 @@ namespace HealthcareAppointmentApp.Data
             {
                 entity.ToTable("DOCTORS");
                 entity.HasIndex(d => d.Lastname, "IX_D_LASTNAME");
+                entity.HasIndex(d => d.PhoneNumber, "UQ_D_PHONE_NUMBER").IsUnique();
                 entity.Property(d => d.Id).HasColumnName("ID");
                 entity.Property(p => p.Firstname).HasMaxLength(50).HasColumnName("FIRSTNAME");
                 entity.Property(d => d.Lastname).HasMaxLength(50).HasColumnName("LASTNAME");
