@@ -99,6 +99,7 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(d => d.Lastname).HasMaxLength(50).HasColumnName("LASTNAME");
                 entity.Property(d => d.SpecialityId).HasColumnName("SPECIALITY_ID");
                 entity.Property(d => d.UserId).HasColumnName("USER_ID");
+                entity.Property(d => d.City).HasMaxLength(50).HasColumnName("CITY");
                 entity.Property(d => d.Address).HasMaxLength(50).HasColumnName("ADDRESS");
                 entity.Property(d => d.StreetNumber).HasColumnName("STREET_NUMBER");
                 entity.Property(d => d.PhoneNumber).HasMaxLength(20).HasColumnName("PHONE_NUMBER");
