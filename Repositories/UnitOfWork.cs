@@ -12,6 +12,11 @@ namespace HealthcareAppointmentApp.Repositories
         }
 
         public UserRepository UserRepository => new UserRepository(_context);
+        public DoctorRepository DoctorRepository => new DoctorRepository(_context);
+        public SpecialityRepository SpecialityRepository => new SpecialityRepository(_context);
+        public PatientRepository PatientRepository => new PatientRepository(_context);
+        public AppointmentRepository AppointmentRepository => new AppointmentRepository(_context);
+        public AvailableTimeSlotRepository AvailableTimeSlotRepository => new AvailableTimeSlotRepository(_context);
 
         public async Task<bool> SaveAsync()
         {

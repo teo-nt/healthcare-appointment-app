@@ -9,6 +9,16 @@ namespace HealthcareAppointmentApp.Repositories
         public UserRepository(HealthCareDbContext context) : base(context) { }
 
         /// <summary>
+        /// Gets a user by email.
+        /// </summary>
+        /// <param name="email">The email of user to be found.</param>
+        /// <returns>The user with this email if exists, null otherwise.</returns>
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            return await _context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
         /// Returns the user based on username.
         /// </summary>
         /// <param name="username">The username of user.</param>
@@ -16,6 +26,17 @@ namespace HealthcareAppointmentApp.Repositories
         public async Task<User?> GetByUsernameAsync(string username)
         {
             return await _context.Users.Where(u => u.Username == username).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Gets the first user having the provided username or email.
+        /// </summary>
+        /// <param name="username">The username of user.</param>
+        /// <param name="email">The email of user.</param>
+        /// <returns>The first user having either the requested username or email.</returns>
+        public async Task<User?> GetByUsernameOrEmailAsync(string username, string email)
+        {
+            return await _context.Users.Where(u => u.Username == username || u.Email == email).FirstOrDefaultAsync();
         }
 
         /// <summary>

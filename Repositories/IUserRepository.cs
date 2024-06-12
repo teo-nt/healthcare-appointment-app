@@ -6,5 +6,7 @@ namespace HealthcareAppointmentApp.Repositories
     {
         Task<User?> GetUserAsync(string username, string password);
         Task<User?> GetByUsernameAsync(string username);
+        Task<User?> GetByUsernameOrEmailAsync(string username, string email);
+        Task<User?> GetByEmailAsync(string email);
     }
 }

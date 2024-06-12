@@ -15,7 +15,7 @@ namespace HealthcareAppointmentApp.Repositories
             _dbSet = _context.Set<T>();
         }
 
-        public virtual async Task<T?> AddAsync(T entity)
+        public virtual async Task<T> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
             return entity;
@@ -27,7 +27,7 @@ namespace HealthcareAppointmentApp.Repositories
             return entities;
         }
 
-        public virtual async Task<T?> DeleteAsync(int id)
+        public virtual async Task<T?> DeleteAsync(long id)
         {
             T? existing = await _dbSet.FindAsync(id);
             if (existing is null)
@@ -43,7 +43,7 @@ namespace HealthcareAppointmentApp.Repositories
             return await _dbSet.ToListAsync();
         }
 
-        public virtual async Task<T?> GetAsync(int id)
+        public virtual async Task<T?> GetAsync(long id)
         {
             return await _dbSet.FindAsync(id);
         }

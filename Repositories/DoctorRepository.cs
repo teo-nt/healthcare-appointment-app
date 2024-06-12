@@ -9,6 +9,11 @@ namespace HealthcareAppointmentApp.Repositories
         {
         }
 
+        public async Task<Doctor?> GetDoctorByPhoneNumber(string phoneNumber)
+        {
+            return await _context.Doctors.Where(d =>  d.PhoneNumber == phoneNumber).FirstOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<Doctor>> GetDoctorsByCity(string city)
         {
             return await _context.Doctors.Where(d => d.City == city).ToListAsync();
