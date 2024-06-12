@@ -40,6 +40,22 @@ namespace HealthcareAppointmentApp.Service
             }
         }
 
+        public async Task<User> GetUserByIdAsync(long id)
+        {
+            try
+            {
+                var user = await _unitOfWork.UserRepository.GetAsync(id);
+                if (user is null) throw new UserNotFoundException($"User with id {id} does not exist");
+                _logger.LogInformation($"User with id: {id} was retrieved");
+                return user;
+            }
+            catch (UserNotFoundException e)
+            {
+                _logger.LogWarning($"Error in retrieving user - {e.Message}");
+                throw;
+            }
+        }
+
         public async Task<User> GetUserByUsernameAsync(string username)
         {
             try
@@ -73,7 +89,7 @@ namespace HealthcareAppointmentApp.Service
             }
         }
 
-        public async Task<User?> SignUpUserDoctorAsync(DoctorSignUpDTO dto)
+        public async Task<User> SignUpUserDoctorAsync(DoctorSignUpDTO dto)
         {
             User? user;
             Doctor? doctor;

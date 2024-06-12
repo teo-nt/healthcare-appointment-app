@@ -22,7 +22,7 @@ namespace HealthcareAppointmentApp.Service
         /// <returns>The created user</returns>
         /// <exception cref="Exceptions.UserAlreadyExistsException"
         /// <exception cref="Exceptions.DoctorAlreadyExistsException"
-        Task<User?> SignUpUserDoctorAsync(DoctorSignUpDTO dto);
+        Task<User> SignUpUserDoctorAsync(DoctorSignUpDTO dto);
 
         /// <summary>
         /// Returns the user based on loginDTO (username and password).
@@ -48,6 +48,14 @@ namespace HealthcareAppointmentApp.Service
         /// <returns>The user with the requested username.</returns>
         /// <exception cref="Exceptions.UserNotFoundException"
         Task<User> GetUserByUsernameAsync(string username);
+
+        /// <summary>
+        /// Retrieves a user by id.
+        /// </summary>
+        /// <param name="id">The id of user.</param>
+        /// <returns>The <see cref="User"/>.</returns>
+        /// <exception cref="Exceptions.UserNotFoundException"
+        Task<User> GetUserByIdAsync(long id);
 
         /// <summary>
         /// Creates a JWT with provided claims.

@@ -1,10 +1,15 @@
-
+using AutoMapper;
+using HealthcareAppointmentApp.Configuration;
 using HealthcareAppointmentApp.Data;
+using HealthcareAppointmentApp.Helpers;
 using HealthcareAppointmentApp.Repositories;
+using HealthcareAppointmentApp.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Serilog;
 using System.Text;
 
@@ -27,6 +32,15 @@ namespace HealthcareAppointmentApp
             var connString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<HealthCareDbContext>(options => options.UseSqlServer(connString));
             builder.Services.AddRepositories();
+            builder.Services.AddScoped<IApplicationService, ApplicationService>();
+            builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+            builder.Services.AddScoped(provider => 
+                new MapperConfiguration(cfg =>
+                {
+                    cfg.AddProfile(new MapperConfig());
+                }).CreateMapper()
+            );
 
             builder.Services.AddAuthentication(options =>
             {
@@ -50,6 +64,15 @@ namespace HealthcareAppointmentApp
                         jwtSettings["securityKey"]!))
                 };
             });
+
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    
+                });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -88,6 +111,8 @@ namespace HealthcareAppointmentApp
                 });
             });
 
+            builder.Services.AddSwaggerGenNewtonsoftSupport();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AngularClient",
@@ -105,6 +130,7 @@ namespace HealthcareAppointmentApp
                 app.UseSwaggerUI();
             }
 
+            app.UseExceptionHandler(_ => { });
             app.UseHttpsRedirection();
             app.UseCors("AngularClient");
             app.UseAuthentication();
