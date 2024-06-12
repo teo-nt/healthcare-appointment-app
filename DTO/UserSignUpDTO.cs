@@ -2,10 +2,11 @@
 
 namespace HealthcareAppointmentApp.DTO
 {
-    public class UserUpdatePasswordEmailDTO
+    public class UserSignUpDTO
     {
-        [Required(ErrorMessage = "User id is required")]
-        public long Id { get; set; }
+        [Required(ErrorMessage = "Username is required")]
+        [StringLength(30, MinimumLength = 5, ErrorMessage = "Username should be 5 - 30 characters")]
+        public string Username { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Password is required")]
         [RegularExpression(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).{8,}$",
