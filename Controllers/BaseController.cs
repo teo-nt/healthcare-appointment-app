@@ -1,6 +1,7 @@
 ﻿using HealthcareAppointmentApp.Models;
 using HealthcareAppointmentApp.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace HealthcareAppointmentApp.Controllers
@@ -22,7 +23,7 @@ namespace HealthcareAppointmentApp.Controllers
             get
             {
                 if (User is null || User.Claims is null) return null;
-                var claimTypes = User.Claims.Select(x => x.Type);
+                var claimTypes = User.Claims.Select(x => x.Type);            
                 if (!claimTypes.Contains(ClaimTypes.NameIdentifier)) return null;
                 if (!claimTypes.Contains(ClaimTypes.Name)) return null;
                 if (!claimTypes.Contains(ClaimTypes.Email)) return null;
@@ -32,7 +33,7 @@ namespace HealthcareAppointmentApp.Controllers
                 var userClaimsEmail = User.FindFirstValue(ClaimTypes.Email);
                 var userClaimsRole = User.FindFirstValue(ClaimTypes.Role);
                 _ = long.TryParse(userClaimsId, out long id);
-
+                
                 _appUser = new ApplicationUser
                 {
                     Id = id,
@@ -40,6 +41,7 @@ namespace HealthcareAppointmentApp.Controllers
                     Email = userClaimsEmail!,
                     Role = userClaimsRole!
                 };
+
                 return _appUser;
             }
         }

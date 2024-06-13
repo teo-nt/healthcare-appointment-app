@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using HealthcareAppointmentApp.Data;
 using HealthcareAppointmentApp.DTO;
+using HealthcareAppointmentApp.Models;
 using HealthcareAppointmentApp.Service;
+using HealthcareAppointmentApp.Service.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -59,16 +61,49 @@ namespace HealthcareAppointmentApp.Controllers
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, responseDTO);
         }
 
-        /*[HttpPost]
+        [HttpPost("login")]
         public async Task<ActionResult<JwtTokenDTO>> Login(LoginDTO loginDTO)
         {
+            var user = await _applicationService.UserService.LoginUserAsync(loginDTO);
+           /* if (user.Status == UserStatus.Pending)
+            {
+                throw new AccountNotActivatedException("This account is not activated yet");
+            }*/
+            var appUser = new ApplicationUser
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                Role = user.UserRole.ToString()
+            };
+            var jwtSettings = _configuration.GetSection("JWTSettings");
+            string token = _applicationService.UserService.CreateUserToken(appUser, jwtSettings);
 
-        }*/
+            JwtTokenDTO jwt = new()
+            {
+                Token = token,
+            };
+
+            return Ok(jwt);
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<UserReadOnlyDTO>> GetUserById(long id)
         {
             var user = await _applicationService.UserService.GetUserByIdAsync(id);
+            var returnedUser = _mapper.Map<UserReadOnlyDTO>(user);
+            return Ok(returnedUser);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<ActionResult<UserReadOnlyDTO>> DeleteUserById(long id)
+        {
+            if (AppUser!.Role != "Admin" && AppUser.Id != id)
+            {
+                throw new ForbiddenActionException("This action is not allowed");
+            }
+            var user = await _applicationService.UserService.DeleteUserAsync(id);
             var returnedUser = _mapper.Map<UserReadOnlyDTO>(user);
             return Ok(returnedUser);
         }
