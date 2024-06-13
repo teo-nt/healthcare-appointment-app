@@ -19,7 +19,7 @@ namespace HealthcareAppointmentApp.DTO
         [Range(18, 100, MinimumIsExclusive = false, MaximumIsExclusive = false, ErrorMessage = "Age should be 18-100")]
         public uint Age { get; set; }
 
-        [RegularExpression(@"^[Ff]|[Mm]$", ErrorMessage = "Acceptable values for gender are F,M")]
+        [RegularExpression(@"^F|M$", ErrorMessage = "Acceptable values for gender are F,M")]
         public string? Gender { get; set; }
 
         public string? MedicalHistory { get; set; }
