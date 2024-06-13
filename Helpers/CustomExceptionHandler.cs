@@ -19,6 +19,8 @@ namespace HealthcareAppointmentApp.Helpers
                 UserAlreadyExistsException => (int)HttpStatusCode.BadRequest,
 
                 UserNotFoundException => (int)HttpStatusCode.NotFound,
+                ForbiddenActionException => (int)HttpStatusCode.Forbidden,
+                AccountNotActivatedException => (int)HttpStatusCode.Locked,
                 _ => (int)HttpStatusCode.InternalServerError
             };
             await response.WriteAsJsonAsync(new { message = exception.Message }, cancellationToken);
