@@ -9,6 +9,15 @@ namespace HealthcareAppointmentApp.Repositories
         public UserRepository(HealthCareDbContext context) : base(context) { }
 
         /// <summary>
+        /// Gets all users with their details (either doctor or patient).
+        /// </summary>
+        /// <returns>A detailed IEnumerable of users.</returns>     
+        public async Task<IEnumerable<User>> GetAllWithDetailsAsync()
+        {
+            return await _context.Users.Include(u => u.Doctor).ThenInclude(d => d != null ? d.Speciality : null).Include(u => u.Patient).ToListAsync();
+        }
+
+        /// <summary>
         /// Gets a user by email.
         /// </summary>
         /// <param name="email">The email of user to be found.</param>

@@ -73,5 +73,11 @@ namespace HealthcareAppointmentApp.Service
         /// <returns>The deleted user.</returns>
         /// <exception cref="Exceptions.UserNotFoundException"
         Task<User> DeleteUserAsync(long id);
+
+        /// <summary>
+        /// Gets all users with their details.
+        /// </summary>
+        /// <returns>An IEnumerable of <see cref="User"/>.</returns>
+        Task<IEnumerable<User>> GetAllUsersAsync();
     }
 }

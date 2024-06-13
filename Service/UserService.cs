@@ -66,6 +66,11 @@ namespace HealthcareAppointmentApp.Service
             }
         }
 
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _unitOfWork.UserRepository.GetAllWithDetailsAsync();
+        }
+
         public async Task<User> GetUserByIdAsync(long id)
         {
             try

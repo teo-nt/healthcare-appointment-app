@@ -95,6 +95,19 @@ namespace HealthcareAppointmentApp.Controllers
             return Ok(returnedUser);
         }
 
+        [HttpGet("details")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IList<UserDetailsDTO>>> GetAllUsersDetails()
+        {
+            var users = await _applicationService.UserService.GetAllUsersAsync();
+            IList<UserDetailsDTO> usersToReturn = [];
+            foreach (var user in users)
+            {
+                usersToReturn.Add(_mapper.Map<UserDetailsDTO>(user));
+            }
+            return Ok(usersToReturn);
+        }
+
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<ActionResult<UserReadOnlyDTO>> DeleteUserById(long id)
