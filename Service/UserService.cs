@@ -4,6 +4,10 @@ using HealthcareAppointmentApp.Models;
 using HealthcareAppointmentApp.Repositories;
 using HealthcareAppointmentApp.Security;
 using HealthcareAppointmentApp.Service.Exceptions;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace HealthcareAppointmentApp.Service
 {
@@ -18,12 +22,34 @@ namespace HealthcareAppointmentApp.Service
             _logger = logger;
         }
 
-        public string CreateUserToken(int userId, string username, string email, UserRole role, string securityKey)
+        public string CreateUserToken(ApplicationUser appUser, IConfigurationSection jwtSettings)
         {
-            throw new NotImplementedException();
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.GetSection("securityKey").Value!));
+            var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, appUser.Username),
+                new Claim(ClaimTypes.NameIdentifier, appUser.Id.ToString()),
+                new Claim(ClaimTypes.Role, appUser.Role),
+                new Claim(ClaimTypes.Email, appUser.Email),
+                new Claim(JwtRegisteredClaimNames.Aud, jwtSettings.GetSection("ValidAudience").Value!),
+                new Claim(JwtRegisteredClaimNames.Iss, jwtSettings.GetSection("ValidIssuer").Value!)
+            };
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddMinutes(30),
+                SigningCredentials = signingCredentials
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
-        public async Task<User> DeleteUserAsync(int id)
+        public async Task<User> DeleteUserAsync(long id)
         {
             try
             {
@@ -35,7 +61,7 @@ namespace HealthcareAppointmentApp.Service
             }
             catch (UserNotFoundException e)
             {
-                _logger.LogWarning($"Error in delete - {e.Message}");
+                _logger.LogWarning($"Error in delete -- {e.Message}");
                 throw;
             }
         }
@@ -51,7 +77,7 @@ namespace HealthcareAppointmentApp.Service
             }
             catch (UserNotFoundException e)
             {
-                _logger.LogWarning($"Error in retrieving user - {e.Message}");
+                _logger.LogWarning($"Error in retrieving user -- {e.Message}");
                 throw;
             }
         }
@@ -67,7 +93,7 @@ namespace HealthcareAppointmentApp.Service
             }
             catch (UserNotFoundException e)
             {
-                _logger.LogWarning($"Error in retrieving user - {e.Message}");
+                _logger.LogWarning($"Error in retrieving user -- {e.Message}");
                 throw;
             }
         }
@@ -78,13 +104,13 @@ namespace HealthcareAppointmentApp.Service
             {
                 User? user = await _unitOfWork.UserRepository.GetUserAsync(loginDTO.Username, loginDTO.Password);
                 if (user is null) throw new InvalidCredentialsException
-                        ($"Failure in login with username: {loginDTO.Username}");
+                        ($"Invalid credentials - Failure in login with username: {loginDTO.Username}");
                 _logger.LogInformation($"User with username: {loginDTO.Username} logged in");
                 return user;
             }
             catch (InvalidCredentialsException e)
             {
-                _logger.LogWarning($"Error in user login - {e.Message}");
+                _logger.LogWarning($"Error in user login -- {e.Message}");
                 throw;
             }
         }

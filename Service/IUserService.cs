@@ -55,18 +55,16 @@ namespace HealthcareAppointmentApp.Service
         /// <param name="id">The id of user.</param>
         /// <returns>The <see cref="User"/>.</returns>
         /// <exception cref="Exceptions.UserNotFoundException"
-        Task<User> GetUserByIdAsync(long id);
+        Task<User> GetUserByIdAsync(long id); 
 
         /// <summary>
         /// Creates a JWT with provided claims.
         /// </summary>
-        /// <param name="userId">Id of user.</param>
-        /// <param name="username">Username of user.</param>
-        /// <param name="email">Email of user.</param>
-        /// <param name="role">Role of user.</param>
-        /// <param name="securityKey">Key used for signature.</param>
+        /// <param name="appUser">Entity containing the claims.</param>
+        /// <param name="jwtSettings">Configuration from appsettings.json that 
+        ///     contains all necessary fields to create a jwt.</param>
         /// <returns>The JWT.</returns>
-        string CreateUserToken(int userId, string username, string email, UserRole role, String securityKey);
+        string CreateUserToken(ApplicationUser appUser, IConfigurationSection jwtSettings);
 
         /// <summary>
         /// Deletes a user based on id. Exception is thrown if user is not found.
@@ -74,6 +72,6 @@ namespace HealthcareAppointmentApp.Service
         /// <param name="id">Id of user.</param>
         /// <returns>The deleted user.</returns>
         /// <exception cref="Exceptions.UserNotFoundException"
-        Task<User> DeleteUserAsync(int id);
+        Task<User> DeleteUserAsync(long id);
     }
 }
