@@ -30,6 +30,9 @@ namespace HealthcareAppointmentApp.Configuration
                 .ForMember(dest => dest.MedicalHistory, opt => opt.MapFrom(src => src.Patient!.MedicalHistory))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Patient!.PhoneNumber));
 
+            CreateMap<User, UserDetailsDTO>();
+            CreateMap<Doctor, DoctorDTO>();
+            CreateMap<Patient, PatientDTO>();
             CreateMap<User, UserReadOnlyDTO>();
             CreateMap<Speciality, SpecialityReadOnlyDTO>();
         }
