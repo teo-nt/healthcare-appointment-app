@@ -84,7 +84,7 @@ namespace HealthcareAppointmentApp
                 options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme,
                     new OpenApiSecurityScheme
                     {
-                        Description = "JWT Authorization header using Bearer scheme",
+                        Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
                         Name = "Authorization",
                         In = ParameterLocation.Header,
                         Type = SecuritySchemeType.ApiKey,
