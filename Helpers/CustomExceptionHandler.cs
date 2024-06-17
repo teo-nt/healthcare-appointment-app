@@ -1,4 +1,5 @@
-﻿using HealthcareAppointmentApp.Service.Exceptions;
+﻿using HealthcareAppointmentApp.Models;
+using HealthcareAppointmentApp.Service.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
 
@@ -24,7 +25,7 @@ namespace HealthcareAppointmentApp.Helpers
                 AccountDeclinedException => (int)HttpStatusCode.Locked,
                 _ => (int)HttpStatusCode.InternalServerError
             };
-            await response.WriteAsJsonAsync(new { message = exception.Message }, cancellationToken);
+            await response.WriteAsJsonAsync(new Error { Message = exception.Message }, cancellationToken);
             return true;
         }
     }

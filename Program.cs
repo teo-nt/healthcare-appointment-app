@@ -81,6 +81,7 @@ namespace HealthcareAppointmentApp
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Health care API", Version = "v1" });
                 options.SupportNonNullableReferenceTypes();
+                options.EnableAnnotations();
                 options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme,
                     new OpenApiSecurityScheme
                     {
