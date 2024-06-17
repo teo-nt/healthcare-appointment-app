@@ -79,5 +79,13 @@ namespace HealthcareAppointmentApp.Service
         /// </summary>
         /// <returns>An IEnumerable of <see cref="User"/>.</returns>
         Task<IEnumerable<User>> GetAllUsersAsync();
+
+        /// <summary>
+        /// Gets a user with details (either doctor or patient).
+        /// </summary>
+        /// <param name="id">The id of user to be found.</param>
+        /// <returns>A user with details included. If no user is found an exception is thrown.</returns>
+        /// <exception cref="Exceptions.UserNotFoundException"
+        Task<User> GetUserDetailsById(long id);
     }
 }

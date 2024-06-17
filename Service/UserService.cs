@@ -68,7 +68,9 @@ namespace HealthcareAppointmentApp.Service
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            return await _unitOfWork.UserRepository.GetAllWithDetailsAsync();
+            var users = await _unitOfWork.UserRepository.GetAllWithDetailsAsync();
+            _logger.LogInformation("All users with their details were retrieved");
+            return users;
         }
 
         public async Task<User> GetUserByIdAsync(long id)
@@ -99,6 +101,22 @@ namespace HealthcareAppointmentApp.Service
             catch (UserNotFoundException e)
             {
                 _logger.LogWarning($"Error in retrieving user -- {e.Message}");
+                throw;
+            }
+        }
+
+        public async Task<User> GetUserDetailsById(long id)
+        {
+            try
+            {
+                var user = await _unitOfWork.UserRepository.GetDetailsAsync(id);
+                if (user is null) throw new UserNotFoundException($"User with id: {id} does not exist");
+                _logger.LogInformation($"User details with id: {id} were retrieved");
+                return user;
+            }
+            catch (UserNotFoundException e)
+            {
+                _logger.LogWarning($"Error in getting user details -- {e.Message}");
                 throw;
             }
         }
@@ -262,5 +280,6 @@ namespace HealthcareAppointmentApp.Service
                 AppointmentDuration = dto.AppointmentDuration ?? APPOINTMENT_DEFAULT_DURATION
             };
         }
+
     }
 }

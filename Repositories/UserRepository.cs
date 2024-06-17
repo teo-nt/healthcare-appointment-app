@@ -49,6 +49,20 @@ namespace HealthcareAppointmentApp.Repositories
         }
 
         /// <summary>
+        /// Gets a user with details (either doctor or patient).
+        /// </summary>
+        /// <param name="id">The id of user to be found.</param>
+        /// <returns>A <see cref="User"/> with navigation properties included or null if not found.</returns>
+        public async Task<User?> GetDetailsAsync(long id)
+        {
+            return await _context.Users.Where(u => u.Id == id)
+                    .Include(u => u.Patient)
+                    .Include(u => u.Doctor)
+                    .ThenInclude(d => d == null ? null : d.Speciality)
+                    .FirstOrDefaultAsync();
+        }
+
+        /// <summary>
         /// Gets the user based on username and password.
         /// </summary>
         /// <param name="username">The username of user.</param>
