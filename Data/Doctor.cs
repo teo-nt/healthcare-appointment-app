@@ -16,7 +16,7 @@
         public long UserId { get; set; }
         public virtual User User { get; set; } = null!;
 
-        public virtual ICollection<AvailableTimeSlot> AvailableTimeSlots { get; } = new HashSet<AvailableTimeSlot>();
+        public virtual ICollection<TimeSlot> TimeSlots { get; } = new HashSet<TimeSlot>();
         public virtual ICollection<Appointment> Appointments { get; } = new HashSet<Appointment>();
     }
 }

@@ -4,6 +4,7 @@ using HealthcareAppointmentApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthcareAppointmentApp.Migrations
 {
     [DbContext(typeof(HealthCareDbContext))]
-    partial class HealthCareDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240618014356_AddStatusToTimeslots")]
+    partial class AddStatusToTimeslots
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,6 +71,55 @@ namespace HealthcareAppointmentApp.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("APPOINTMENTS", (string)null);
+                });
+
+            modelBuilder.Entity("HealthcareAppointmentApp.Data.AvailableTimeSlot", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CREATED_AT")
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date")
+                        .HasColumnName("DATE");
+
+                    b.Property<long>("DoctorId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("DOCTOR_ID");
+
+                    b.Property<TimeOnly>("EndTimeSlot")
+                        .HasColumnType("time")
+                        .HasColumnName("END_TIME");
+
+                    b.Property<TimeOnly>("StartTimeSlot")
+                        .HasColumnType("time")
+                        .HasColumnName("START_TIME");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("STATUS");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UPDATED_AT")
+                        .HasDefaultValueSql("getdate()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("AVAILABLE_TIMESLOTS", (string)null);
                 });
 
             modelBuilder.Entity("HealthcareAppointmentApp.Data.Doctor", b =>
@@ -256,55 +308,6 @@ namespace HealthcareAppointmentApp.Migrations
                     b.ToTable("SPECIALITIES", (string)null);
                 });
 
-            modelBuilder.Entity("HealthcareAppointmentApp.Data.TimeSlot", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("ID");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CREATED_AT")
-                        .HasDefaultValueSql("getdate()");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date")
-                        .HasColumnName("DATE");
-
-                    b.Property<long>("DoctorId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("DOCTOR_ID");
-
-                    b.Property<TimeOnly>("EndTimeSlot")
-                        .HasColumnType("time")
-                        .HasColumnName("END_TIME");
-
-                    b.Property<TimeOnly>("StartTimeSlot")
-                        .HasColumnType("time")
-                        .HasColumnName("START_TIME");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("STATUS");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("UPDATED_AT")
-                        .HasDefaultValueSql("getdate()");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId");
-
-                    b.ToTable("TIMESLOTS", (string)null);
-                });
-
             modelBuilder.Entity("HealthcareAppointmentApp.Data.User", b =>
                 {
                     b.Property<long>("Id")
@@ -384,6 +387,17 @@ namespace HealthcareAppointmentApp.Migrations
                     b.Navigation("Patient");
                 });
 
+            modelBuilder.Entity("HealthcareAppointmentApp.Data.AvailableTimeSlot", b =>
+                {
+                    b.HasOne("HealthcareAppointmentApp.Data.Doctor", "Doctor")
+                        .WithMany("AvailableTimeSlots")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+                });
+
             modelBuilder.Entity("HealthcareAppointmentApp.Data.Doctor", b =>
                 {
                     b.HasOne("HealthcareAppointmentApp.Data.Speciality", "Speciality")
@@ -410,17 +424,6 @@ namespace HealthcareAppointmentApp.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("HealthcareAppointmentApp.Data.TimeSlot", b =>
-                {
-                    b.HasOne("HealthcareAppointmentApp.Data.Doctor", "Doctor")
-                        .WithMany("AvailableTimeSlots")
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("HealthcareAppointmentApp.Data.Doctor", b =>

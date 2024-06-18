@@ -7,7 +7,7 @@ namespace HealthcareAppointmentApp.Data
         public HealthCareDbContext(DbContextOptions<HealthCareDbContext> options) : base(options) { }
        
         public virtual DbSet<Appointment> Appointments { get; set; }
-        public virtual DbSet<AvailableTimeSlot> AvailableTimeSlots { get; set; }
+        public virtual DbSet<TimeSlot> TimeSlots { get; set; }
         public virtual DbSet<Doctor> Doctors { get; set; }
         public virtual DbSet<Patient> Patients { get; set; }
         public virtual DbSet<Speciality> Specialities { get; set; }
@@ -118,21 +118,22 @@ namespace HealthcareAppointmentApp.Data
                     .HasForeignKey(d => d.SpecialityId);
             });
 
-            modelBuilder.Entity<AvailableTimeSlot>(entity =>
+            modelBuilder.Entity<TimeSlot>(entity =>
             {
-                entity.ToTable("AVAILABLE_TIMESLOTS");
+                entity.ToTable("TIMESLOTS");
                 entity.Property(e => e.Id).HasColumnName("ID");
                 entity.Property(e => e.DoctorId).HasColumnName("DOCTOR_ID");
                 entity.Property(e => e.Date).HasColumnName("DATE");
                 entity.Property(e => e.StartTimeSlot).HasColumnName("START_TIME");
                 entity.Property(e => e.EndTimeSlot).HasColumnName("END_TIME");
+                entity.Property(e => e.Status).HasColumnName("STATUS").HasConversion<string>();
                 entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
                     .HasDefaultValueSql("getdate()")
                     .ValueGeneratedOnAddOrUpdate();
                 entity.HasOne(e => e.Doctor)
-                    .WithMany(d => d.AvailableTimeSlots)
+                    .WithMany(d => d.TimeSlots)
                     .HasForeignKey(e => e.DoctorId);
             });
         }
