@@ -35,6 +35,7 @@ namespace HealthcareAppointmentApp.Configuration
             CreateMap<Patient, PatientDTO>();
             CreateMap<User, UserReadOnlyDTO>();
             CreateMap<Speciality, SpecialityReadOnlyDTO>();
+            CreateMap<TimeSlot, AvailableTimeslotDTO>();
         }
     }
 }
