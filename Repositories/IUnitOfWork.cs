@@ -7,7 +7,7 @@
         PatientRepository PatientRepository { get; }
         SpecialityRepository SpecialityRepository { get; }
         AppointmentRepository AppointmentRepository { get; }
-        AvailableTimeSlotRepository AvailableTimeSlotRepository { get; }
+        TimeSlotRepository TimeSlotRepository { get; }
 
         Task<bool> SaveAsync();
     }

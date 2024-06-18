@@ -38,5 +38,15 @@ namespace HealthcareAppointmentApp.Repositories
                         && d.Speciality.SpecialityName.Contains(speciality))
                 .ToListAsync();
         }
+
+        /// <summary>
+        /// Gets all timeslots for a specific doctor.
+        /// </summary>
+        /// <param name="id">The id of doctor.</param>
+        /// <returns>A list of timeslots.</returns>
+        public async Task<IEnumerable<TimeSlot>> GetTimeSlots(long id)
+        {
+            return await _context.TimeSlots.Where(t => t.DoctorId == id).ToListAsync();
+        }
     }
 }
