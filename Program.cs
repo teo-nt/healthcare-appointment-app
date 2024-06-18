@@ -110,6 +110,8 @@ namespace HealthcareAppointmentApp
                         new List<string>()
                     }
                 });
+
+                options.SchemaFilter<TimeOnlySchemaFilter>();
             });
 
             builder.Services.AddSwaggerGenNewtonsoftSupport();
