@@ -415,7 +415,7 @@ namespace HealthcareAppointmentApp.Migrations
             modelBuilder.Entity("HealthcareAppointmentApp.Data.TimeSlot", b =>
                 {
                     b.HasOne("HealthcareAppointmentApp.Data.Doctor", "Doctor")
-                        .WithMany("AvailableTimeSlots")
+                        .WithMany("TimeSlots")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -427,7 +427,7 @@ namespace HealthcareAppointmentApp.Migrations
                 {
                     b.Navigation("Appointments");
 
-                    b.Navigation("AvailableTimeSlots");
+                    b.Navigation("TimeSlots");
                 });
 
             modelBuilder.Entity("HealthcareAppointmentApp.Data.Patient", b =>

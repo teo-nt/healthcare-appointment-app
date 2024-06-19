@@ -137,5 +137,31 @@ namespace HealthcareAppointmentApp.Data
                     .HasForeignKey(e => e.DoctorId);
             });
         }
+
+        /// <summary>
+        /// Override SaveChangesAsync of DbContext so that updated_at field changes when an entity is updated.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>A Task that represents the asynchronous save operation.</returns>
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            UpdateTimestamps();
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void UpdateTimestamps()
+        {
+            var entries = ChangeTracker
+                .Entries()
+                .Where(e => e.State == EntityState.Modified);
+
+            foreach (var entry in entries)
+            {
+                if (entry.Entity is BaseEntity entity)
+                {
+                    entity.UpdatedAt = DateTime.Now;
+                }
+            }
+        }
     }
 }
