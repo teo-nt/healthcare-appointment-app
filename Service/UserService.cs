@@ -228,7 +228,7 @@ namespace HealthcareAppointmentApp.Service
                 User? existingUserEmail = await _unitOfWork.UserRepository.GetByEmailAsync(dto.Email);
                 if (existingUserEmail is not null && existingUserEmail.Id != dto.Id)
                 {
-                    throw new UserAlreadyExistsException($"User with email: {user.Email} already exists");
+                    throw new UserAlreadyExistsException($"User with email: {dto.Email} already exists");
                 }
                 user.Password = EncryptionUtil.EncryptPassword(dto.Password);
                 user.Email = dto.Email;

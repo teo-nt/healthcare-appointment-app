@@ -91,7 +91,7 @@ namespace HealthcareAppointmentApp.Controllers
         }
 
         [HttpGet("{id}")]
-        [SwaggerOperation(Summary = "Gets a user by id")]
+        [SwaggerOperation(Summary = "Get a user by id")]
         [ProducesResponseType(typeof(UserReadOnlyDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserReadOnlyDTO>> GetUserById(long id)
@@ -103,7 +103,7 @@ namespace HealthcareAppointmentApp.Controllers
 
         [HttpGet("details")]
         [Authorize(Roles = "Admin")]
-        [SwaggerOperation(Summary = "Gets all users with their details", Description = "Only admins have access.")]
+        [SwaggerOperation(Summary = "Get all users with their details", Description = "Only admins have access.")]
         [ProducesResponseType(typeof(IList<UserDetailsDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
@@ -128,9 +128,28 @@ namespace HealthcareAppointmentApp.Controllers
             return Ok(userToReturn);
         }
 
+        [HttpPatch]
+        [Authorize]
+        [SwaggerOperation(Summary = "Update a user's email and password", Description = "Only authorized users can access it. Admins can update everyone." +
+            "Patients and doctors can only update their account.")]
+        [ProducesResponseType(typeof(UserReadOnlyDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<UserReadOnlyDTO>> UpdateEmailAndPassword(UserUpdatePasswordEmailDTO dto)
+        {
+            if (AppUser!.Role != "Admin" && dto.Id != AppUser.Id)
+            {
+                throw new ForbiddenActionException("This action is not allowed");
+            }
+            var updatedUser = await _applicationService.UserService.UpdateUserAsync(dto);
+            var updatedUserToReturn = _mapper.Map<UserReadOnlyDTO>(updatedUser);
+            return Ok(updatedUserToReturn);
+        }
+
         [HttpDelete("{id}")]
         [Authorize]
-        [SwaggerOperation(Summary = "Deletes a user by ID", Description = "Only authorized users can access it. Admins can delete everyone." +
+        [SwaggerOperation(Summary = "Delete a user by ID", Description = "Only authorized users can access it. Admins can delete everyone." +
             "Patients and doctors can only delete their account.")]
         [ProducesResponseType(typeof(UserReadOnlyDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
