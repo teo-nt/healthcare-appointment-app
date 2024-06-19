@@ -5,6 +5,7 @@ namespace HealthcareAppointmentApp.DTO
     public class UserUpdatePasswordEmailDTO
     {
         [Required(ErrorMessage = "User id is required")]
+        [Range(1, long.MaxValue, ErrorMessage = "Id is not valid")]
         public long Id { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
