@@ -56,7 +56,7 @@ namespace HealthcareAppointmentApp.Migrations
                         .HasColumnName("PATIENT_ID");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT")
                         .HasDefaultValueSql("getdate()");
@@ -130,7 +130,7 @@ namespace HealthcareAppointmentApp.Migrations
                         .HasColumnName("STREET_NUMBER");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT")
                         .HasDefaultValueSql("getdate()");
@@ -202,7 +202,7 @@ namespace HealthcareAppointmentApp.Migrations
                         .HasColumnName("PHONE_NUMBER");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT")
                         .HasDefaultValueSql("getdate()");
@@ -246,7 +246,7 @@ namespace HealthcareAppointmentApp.Migrations
                         .HasColumnName("SPECIALITY_NAME");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT")
                         .HasDefaultValueSql("getdate()");
@@ -293,7 +293,7 @@ namespace HealthcareAppointmentApp.Migrations
                         .HasColumnName("STATUS");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT")
                         .HasDefaultValueSql("getdate()");
@@ -339,7 +339,7 @@ namespace HealthcareAppointmentApp.Migrations
                         .HasColumnName("USER_STATUS");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasColumnName("UPDATED_AT")
                         .HasDefaultValueSql("getdate()");

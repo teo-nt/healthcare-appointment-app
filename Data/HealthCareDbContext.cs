@@ -25,8 +25,8 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
-                    .HasDefaultValueSql("getdate()")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasDefaultValueSql("getdate()");
+                    //.ValueGeneratedOnAddOrUpdate();
                 entity.Property(e => e.AppointmentStatus).HasColumnName("STATUS")
                     .HasConversion<string>()
                     .HasMaxLength(30).IsRequired();
@@ -52,8 +52,8 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
-                    .HasDefaultValueSql("getdate()")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasDefaultValueSql("getdate()");
+                    //.ValueGeneratedOnAddOrUpdate();
             });
 
             modelBuilder.Entity<Patient>(entity =>
@@ -72,8 +72,8 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
-                    .HasDefaultValueSql("getdate()")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasDefaultValueSql("getdate()");
+                    //.ValueGeneratedOnAddOrUpdate();
                 entity.HasOne(p => p.User).WithOne(u => u.Patient)
                     .HasForeignKey<Patient>(p => p.UserId);
             });
@@ -86,8 +86,8 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
-                    .HasDefaultValueSql("getdate()")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasDefaultValueSql("getdate()");
+                    //.ValueGeneratedOnAddOrUpdate();
             });
 
             modelBuilder.Entity<Doctor>(entity =>
@@ -108,8 +108,8 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
-                    .HasDefaultValueSql("getdate()")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasDefaultValueSql("getdate()");
+                    //.ValueGeneratedOnAddOrUpdate();
                 entity.HasOne(d => d.User)
                     .WithOne(u => u.Doctor)
                     .HasForeignKey<Doctor>(d => d.UserId);
@@ -130,8 +130,8 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
-                    .HasDefaultValueSql("getdate()")
-                    .ValueGeneratedOnAddOrUpdate();
+                    .HasDefaultValueSql("getdate()");
+                    //.ValueGeneratedOnAddOrUpdate();
                 entity.HasOne(e => e.Doctor)
                     .WithMany(d => d.TimeSlots)
                     .HasForeignKey(e => e.DoctorId);
