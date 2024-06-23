@@ -263,6 +263,27 @@ namespace HealthcareAppointmentApp.Service
             return true;
         }
 
+
+        public async Task<bool> DisableAccountById(long id)
+        {
+            try
+            {
+                User? user = await _unitOfWork.UserRepository.GetAsync(id);
+                if (user is null) throw new UserNotFoundException($"User with id: {id} does not exist");
+                if (user.Status is UserStatus.Disabled)
+                    throw new AccountDisabledException($"User account with id: {id} is already deactivated");
+                user.Status = UserStatus.Disabled;
+                await _unitOfWork.SaveAsync();
+                _logger.LogInformation($"User account with id: {id} was deactivated");
+            }
+            catch (Exception e) when (e is UserNotFoundException || e is AccountDisabledException)
+            {
+                _logger.LogWarning($"Error disabling account -- {e.Message}");
+                throw;
+            }
+            return true;
+        }
+
         private User ExtractUser(UserSignUpDTO dto)
         {
             return new User

@@ -91,10 +91,19 @@ namespace HealthcareAppointmentApp.Service
         /// <summary>
         /// Activates an account provided the user id.
         /// </summary>
-        /// <param name="id">The id of user to be activated.</param>
+        /// <param name="id">The id of user account to be activated.</param>
         /// <returns>True if activated, otherwise exceptions are thrown.</returns>
         /// <exception cref="Exceptions.UserNotFoundException"
         /// <exception cref="Exceptions.AccountAlreadyActivatedException"
         Task<bool> EnableAccountById(long id);
+
+        /// <summary>
+        /// Disables an account provided the user id.
+        /// </summary>
+        /// <param name="id">The id of user account to be disabled.</param>
+        /// <returns>True if disabled, otherwise exceptions are thrown.</returns>
+        /// <exception cref="Exceptions.UserNotFoundException"
+        /// <exception cref="Exceptions.AccountDisabledException"
+        Task<bool> DisableAccountById(long id);
     }
 }

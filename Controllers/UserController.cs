@@ -161,6 +161,20 @@ namespace HealthcareAppointmentApp.Controllers
             return NoContent();
         }
 
+        [HttpPatch("disable/{id}")]
+        [Authorize(Roles = "Admin")]
+        [SwaggerOperation(Summary = "Disable a user account by id")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status423Locked)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DisableAccount(long id)
+        {
+            await _applicationService.UserService.DisableAccountById(id);
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         [Authorize]
         [SwaggerOperation(Summary = "Delete a user by ID", Description = "Only authorized users can access it. Admins can delete everyone." +
