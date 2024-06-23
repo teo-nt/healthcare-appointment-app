@@ -1,9 +1,12 @@
 using AutoMapper;
+using FluentValidation;
 using HealthcareAppointmentApp.Configuration;
 using HealthcareAppointmentApp.Data;
+using HealthcareAppointmentApp.DTO;
 using HealthcareAppointmentApp.Helpers;
 using HealthcareAppointmentApp.Repositories;
 using HealthcareAppointmentApp.Service;
+using HealthcareAppointmentApp.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -33,6 +36,7 @@ namespace HealthcareAppointmentApp
             builder.Services.AddDbContext<HealthCareDbContext>(options => options.UseSqlServer(connString));
             builder.Services.AddRepositories();
             builder.Services.AddScoped<IApplicationService, ApplicationService>();
+            builder.Services.AddScoped<IValidator<AvailabilityInsertDTO>, AvailabilityInsertValidator>();
             builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
             builder.Services.AddScoped(provider => 

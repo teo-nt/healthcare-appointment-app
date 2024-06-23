@@ -4,6 +4,6 @@
     {
         Pending,
         Approved,
-        Declined
+        Disabled
     }
 }
