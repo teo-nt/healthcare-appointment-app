@@ -68,10 +68,12 @@ namespace HealthcareAppointmentApp.Controllers
         public async Task<ActionResult<JwtTokenDTO>> Login(LoginDTO loginDTO)
         {
             var user = await _applicationService.UserService.LoginUserAsync(loginDTO);
-           /* if (user.Status == UserStatus.Pending)
+            _ = user.Status switch
             {
-                throw new AccountNotActivatedException("This account is not activated yet");
-            }*/
+                UserStatus.Pending => throw new AccountNotActivatedException("This account is not activated yet"),
+                UserStatus.Disabled => throw new AccountDisabledException("This account is disabled"),
+                _ => true
+            };
             var appUser = new ApplicationUser
             {
                 Id = user.Id,
