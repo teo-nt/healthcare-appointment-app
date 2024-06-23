@@ -128,7 +128,7 @@ namespace HealthcareAppointmentApp.Controllers
             return Ok(userToReturn);
         }
 
-        [HttpPatch]
+        [HttpPatch("update")]
         [Authorize]
         [SwaggerOperation(Summary = "Update a user's email and password", Description = "Only authorized users can access it. Admins can update everyone." +
             "Patients and doctors can only update their account.")]
@@ -145,6 +145,20 @@ namespace HealthcareAppointmentApp.Controllers
             var updatedUser = await _applicationService.UserService.UpdateUserAsync(dto);
             var updatedUserToReturn = _mapper.Map<UserReadOnlyDTO>(updatedUser);
             return Ok(updatedUserToReturn);
+        }
+
+        [HttpPatch("enable/{id}")]
+        [Authorize(Roles = "Admin")]
+        [SwaggerOperation(Summary = "Enable a user account by id")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> EnableAccount(long id)
+        {
+            await _applicationService.UserService.EnableAccountById(id);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]

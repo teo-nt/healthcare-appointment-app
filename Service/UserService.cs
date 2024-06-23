@@ -243,6 +243,26 @@ namespace HealthcareAppointmentApp.Service
             }
         }
 
+        public async Task<bool> EnableAccountById(long id)
+        {
+            try
+            {
+                User? user = await _unitOfWork.UserRepository.GetAsync(id);
+                if (user is null) throw new UserNotFoundException($"User with id: {id} does not exist");
+                if (user.Status is UserStatus.Approved) 
+                        throw new AccountAlreadyActivatedException($"User account with id: { id } is already activated");
+                user.Status = UserStatus.Approved;
+                await _unitOfWork.SaveAsync();
+                _logger.LogInformation($"User account with id: {id} was activated");
+            }
+            catch (Exception e) when (e is UserNotFoundException || e is AccountAlreadyActivatedException)
+            {
+                _logger.LogWarning($"Error enabling account -- {e.Message}");
+                throw;
+            }
+            return true;
+        }
+
         private User ExtractUser(UserSignUpDTO dto)
         {
             return new User

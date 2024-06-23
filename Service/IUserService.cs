@@ -87,5 +87,14 @@ namespace HealthcareAppointmentApp.Service
         /// <returns>A user with details included. If no user is found an exception is thrown.</returns>
         /// <exception cref="Exceptions.UserNotFoundException"
         Task<User> GetUserDetailsById(long id);
+
+        /// <summary>
+        /// Activates an account provided the user id.
+        /// </summary>
+        /// <param name="id">The id of user to be activated.</param>
+        /// <returns>True if activated, otherwise exceptions are thrown.</returns>
+        /// <exception cref="Exceptions.UserNotFoundException"
+        /// <exception cref="Exceptions.AccountAlreadyActivatedException"
+        Task<bool> EnableAccountById(long id);
     }
 }
