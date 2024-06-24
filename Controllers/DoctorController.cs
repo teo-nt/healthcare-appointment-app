@@ -5,6 +5,7 @@ using HealthcareAppointmentApp.Models;
 using HealthcareAppointmentApp.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace HealthcareAppointmentApp.Controllers
 {
@@ -22,6 +23,10 @@ namespace HealthcareAppointmentApp.Controllers
 
         [HttpPost("availability")]
         [Authorize(Roles = "Doctor")]
+        [ProducesResponseType(typeof(IList<AvailableTimeslotDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IList<AvailableTimeslotDTO>>> AddAvailability(AvailabilityInsertDTO dto)
         {
             var validationResults = _validator.Validate(dto);
@@ -44,5 +49,22 @@ namespace HealthcareAppointmentApp.Controllers
             return Ok(timeslotsToReturn);
         }
 
+        [HttpGet("timeslots")]
+        [Authorize(Roles = "Doctor")]
+        [SwaggerOperation(Summary = "Gets all timeslots for logged in doctor", 
+                Description = "Only users logged in as doctors have access.")]
+        [ProducesResponseType(typeof(IList<AvailableTimeslotDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<IList<AvailableTimeslotDTO>>> GetTimeSlots()
+        {
+            var timeslots = await _applicationService.DoctorService.GetTimeslotsByUserId(AppUser!.Id);
+            IList<AvailableTimeslotDTO> timeslotsToReturn = [];
+            foreach (var timeslot in timeslots)
+            {
+                timeslotsToReturn.Add(_mapper.Map<AvailableTimeslotDTO>(timeslot));
+            }
+            return Ok(timeslotsToReturn);
+        }
     }
 }

@@ -69,5 +69,28 @@ namespace HealthcareAppointmentApp.Service
             }        
         }
 
+        /// <summary>
+        /// Gets all timeslots for a user who must be a doctor.
+        /// </summary>
+        /// <param name="userId">The id of user.</param>
+        /// <returns>An IEnumerable of <see cref="TimeSlot"/> for the specific doctor.</returns>
+        /// <exception cref="UserNotFoundException">If user is not found or is not a doctor.</exception>
+        public async Task<IEnumerable<TimeSlot>> GetTimeslotsByUserId(long userId)
+        {
+            try
+            {
+                User? user = await _unitOfWork.UserRepository.GetDetailsAsync(userId);
+                if (user is null || user.Doctor is null) 
+                    throw new UserNotFoundException($"User with id: {userId} was not found or is not a doctor");
+                var timeslots = await _unitOfWork.DoctorRepository.GetTimeSlots(user.Doctor.Id);
+                _logger.LogInformation($"Doctor with id: {user.Doctor.Id} retreived timeslots successfully");
+                return timeslots;
+            }
+            catch (Exception e) when (e is UserNotFoundException)
+            {
+                _logger.LogWarning($"Error at getting timeslots -- {e.Message}");
+                throw;
+            }
+        }
     }
 }
