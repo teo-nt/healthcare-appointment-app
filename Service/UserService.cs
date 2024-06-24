@@ -282,14 +282,15 @@ namespace HealthcareAppointmentApp.Service
                     if (existingDoctor is not null) _unitOfWork.DoctorRepository.Detach(existingDoctor);
                     Speciality? existingSpeciality = await _unitOfWork.SpecialityRepository
                                                             .GetSpecialityByNameAsync(dto.Doctor.Speciality!.SpecialityName);
+                 
                     if (existingSpeciality is null)
                     {
-                        user.Doctor!.Speciality!.Id = 0;
+                        userToUpdate.Doctor!.Speciality!.Id = 0;
                     }
                     else
                     {
+                        userToUpdate.Doctor!.Speciality!.Id = existingSpeciality.Id;
                         _unitOfWork.SpecialityRepository.Detach(existingSpeciality);
-                        user.Doctor!.Speciality = existingSpeciality;
                     }
                 }
                 _unitOfWork.UserRepository.UpdateDetails(userToUpdate);
