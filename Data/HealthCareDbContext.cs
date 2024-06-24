@@ -22,7 +22,7 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(e => e.DateTime).HasColumnName("DATETIME");
                 entity.Property(e => e.DoctorId).HasColumnName("DOCTOR_ID");
                 entity.Property(e => e.PatientId).HasColumnName("PATIENT_ID");
-                entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
+                entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()").ValueGeneratedOnAddOrUpdate();
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
                     .HasDefaultValueSql("getdate()");
@@ -49,7 +49,7 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(e => e.Email).HasMaxLength(50).HasColumnName("EMAIL");
                 entity.Property(e => e.UserRole).HasMaxLength(30).HasColumnName("ROLE").HasConversion<string>();
                 entity.Property(e => e.Status).HasMaxLength(20).HasColumnName("USER_STATUS").HasConversion<string>();
-                entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
+                entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()").ValueGeneratedOnAddOrUpdate();
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
                     .HasDefaultValueSql("getdate()");
@@ -69,7 +69,7 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(p => p.MedicalHistory).HasMaxLength(-1).HasColumnName("MEDICAL_HISTORY");
                 entity.Property(p => p.PhoneNumber).HasMaxLength(20).HasColumnName("PHONE_NUMBER");
                 entity.Property(p => p.UserId).HasColumnName("USER_ID");
-                entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
+                entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()").ValueGeneratedOnAddOrUpdate();
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
                     .HasDefaultValueSql("getdate()");
@@ -83,7 +83,7 @@ namespace HealthcareAppointmentApp.Data
                 entity.ToTable("SPECIALITIES");
                 entity.Property(s => s.Id).HasColumnName("ID");
                 entity.Property(s => s.SpecialityName).HasMaxLength(80).HasColumnName("SPECIALITY_NAME");
-                entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
+                entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()").ValueGeneratedOnAddOrUpdate();
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
                     .HasDefaultValueSql("getdate()");
@@ -105,7 +105,7 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(d => d.StreetNumber).HasColumnName("STREET_NUMBER");
                 entity.Property(d => d.PhoneNumber).HasMaxLength(20).HasColumnName("PHONE_NUMBER");
                 entity.Property(d => d.AppointmentDuration).HasColumnName("APPOINTMENT_DURATION").HasDefaultValue(30);
-                entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
+                entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()").ValueGeneratedOnAddOrUpdate();
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
                     .HasDefaultValueSql("getdate()");
@@ -127,7 +127,7 @@ namespace HealthcareAppointmentApp.Data
                 entity.Property(e => e.StartTimeSlot).HasColumnName("START_TIME");
                 entity.Property(e => e.EndTimeSlot).HasColumnName("END_TIME");
                 entity.Property(e => e.Status).HasColumnName("STATUS").HasConversion<string>();
-                entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()");
+                entity.Property(e => e.CreatedAt).HasColumnName("CREATED_AT").HasDefaultValueSql("getdate()").ValueGeneratedOnAddOrUpdate();
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnName("UPDATED_AT")
                     .HasDefaultValueSql("getdate()");
