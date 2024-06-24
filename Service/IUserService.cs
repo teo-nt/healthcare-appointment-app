@@ -1,6 +1,7 @@
 ﻿using HealthcareAppointmentApp.Data;
 using HealthcareAppointmentApp.DTO;
 using HealthcareAppointmentApp.Models;
+using HealthcareAppointmentApp.Service.Exceptions;
 
 namespace HealthcareAppointmentApp.Service
 {
@@ -40,6 +41,17 @@ namespace HealthcareAppointmentApp.Service
         /// <exception cref="Exceptions.UserAlreadyExistsException"
         /// <exception cref="Exceptions.UserNotFoundException"
         Task<User> UpdateUserAsync(UserUpdatePasswordEmailDTO dto);
+
+        /// <summary>
+        /// Updates a user navigation properties.
+        /// </summary>
+        /// <param name="dto">The updated user details.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="Exceptions.UserNotFoundException"
+        /// <exception cref="Exceptions.UserAlreadyExistsException"
+        /// <exception cref="Exceptions.DoctorAlreadyExistsException"
+        /// <exception cref="Exceptions.PatientAlreadyExistsException"
+        Task UpdateUserDetailsAsync(UserDetailsDTO dto);
 
         /// <summary>
         /// Returns the user that has the provided username.

@@ -1,4 +1,5 @@
-﻿using HealthcareAppointmentApp.Data;
+﻿using AutoMapper;
+using HealthcareAppointmentApp.Data;
 using HealthcareAppointmentApp.DTO;
 using HealthcareAppointmentApp.Models;
 using HealthcareAppointmentApp.Repositories;
@@ -15,11 +16,13 @@ namespace HealthcareAppointmentApp.Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UserService> _logger;
+        private readonly IMapper _mapper;
 
-        public UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger)
+        public UserService(IUnitOfWork unitOfWork, ILogger<UserService> logger, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _mapper = mapper;
         }
 
         public string CreateUserToken(ApplicationUser appUser, IConfigurationSection jwtSettings)
@@ -241,6 +244,67 @@ namespace HealthcareAppointmentApp.Service
                 _logger.LogWarning($"Error updating user -- {e.Message}");
                 throw;
             }
+        }
+
+
+        public async Task UpdateUserDetailsAsync(UserDetailsDTO dto)
+        {
+            try
+            {
+                User? user = await _unitOfWork.UserRepository.GetDetailsAsync(dto.Id);
+                if (user is null) throw new UserNotFoundException($"User with id: {dto.Id} does not exist.");
+                _unitOfWork.UserRepository.Detach(user);
+
+                User? existingUsernameUser = await _unitOfWork.UserRepository.GetByUsernameAsync(dto.Username);
+                if (existingUsernameUser is not null && existingUsernameUser.Id != dto.Id) 
+                        throw new UserAlreadyExistsException($"User with username: {dto.Username} already exists");
+                if (existingUsernameUser is not null) _unitOfWork.UserRepository.Detach(existingUsernameUser);
+
+                User? existingEmailUser = await _unitOfWork.UserRepository.GetByEmailAsync(dto.Email);
+                if (existingEmailUser is not null && existingEmailUser.Id != dto.Id)
+                    throw new UserAlreadyExistsException($"User with email: {dto.Email} already exists");
+                if (existingEmailUser is not null) _unitOfWork.UserRepository.Detach(existingEmailUser);
+
+                User userToUpdate = _mapper.Map<User>(dto);
+                userToUpdate.Password = user.Password;
+
+                if (dto.UserRole is UserRole.Patient)
+                {
+                    Patient? existingPatient = await _unitOfWork.PatientRepository.GetPatientByPhoneNumber(dto.Patient!.PhoneNumber);
+                    if (existingPatient is not null && existingPatient.Id != dto.Patient.Id)
+                        throw new PatientAlreadyExistsException($"Patient with phone number {dto.Patient.PhoneNumber} already exists");
+                    if (existingPatient is not null) _unitOfWork.PatientRepository.Detach(existingPatient);
+                } else if (dto.UserRole is UserRole.Doctor)
+                {
+                    Doctor? existingDoctor = await _unitOfWork.DoctorRepository.GetDoctorByPhoneNumber(dto.Doctor!.PhoneNumber);
+                    if (existingDoctor is not null && existingDoctor.Id != dto.Doctor.Id)
+                        throw new DoctorAlreadyExistsException($"Doctor with phone number {dto.Doctor.PhoneNumber} already exists");
+                    if (existingDoctor is not null) _unitOfWork.DoctorRepository.Detach(existingDoctor);
+                    Speciality? existingSpeciality = await _unitOfWork.SpecialityRepository
+                                                            .GetSpecialityByNameAsync(dto.Doctor.Speciality!.SpecialityName);
+                    if (existingSpeciality is null)
+                    {
+                        user.Doctor!.Speciality!.Id = 0;
+                    }
+                    else
+                    {
+                        _unitOfWork.SpecialityRepository.Detach(existingSpeciality);
+                        user.Doctor!.Speciality = existingSpeciality;
+                    }
+                }
+                _unitOfWork.UserRepository.UpdateDetails(userToUpdate);
+                await _unitOfWork.SaveAsync();
+                _logger.LogInformation($"User with id: {dto.Id} was updated");
+            }
+            catch (Exception e) when (e is UserNotFoundException or 
+                                           UserAlreadyExistsException or 
+                                           DoctorAlreadyExistsException or
+                                           PatientAlreadyExistsException
+                                      )
+            {
+                _logger.LogWarning($"Error updating user -- {e.Message}");
+                throw;
+            } 
         }
 
         public async Task<bool> EnableAccountById(long id)

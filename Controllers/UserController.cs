@@ -149,6 +149,19 @@ namespace HealthcareAppointmentApp.Controllers
             return Ok(updatedUserToReturn);
         }
 
+        [HttpPatch("update-details")]
+        [Authorize]
+        [SwaggerOperation(Summary = "Update a user details (either doctor or patient)", Description = "Only authorized users can access it.")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateUserDetails(UserDetailsDTO dto)
+        {
+            await _applicationService.UserService.UpdateUserDetailsAsync(dto);
+            return NoContent();
+        }
+
         [HttpPatch("enable/{id}")]
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Enable a user account by id")]
