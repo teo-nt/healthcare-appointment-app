@@ -53,5 +53,10 @@ namespace HealthcareAppointmentApp.Repositories
             _dbSet.Attach(entity);
             _dbSet.Entry(entity).State = EntityState.Modified;
         }
+
+        public void Detach(T entity)
+        {
+            _dbSet.Entry(entity).State = EntityState.Detached;
+        }
     }
 }

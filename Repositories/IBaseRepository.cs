@@ -8,5 +8,6 @@
         Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities);
         void Update(T entity);
         Task<T?> DeleteAsync(long id);
+        void Detach(T entity);
     }
 }

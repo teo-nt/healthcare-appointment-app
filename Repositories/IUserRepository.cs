@@ -10,5 +10,6 @@ namespace HealthcareAppointmentApp.Repositories
         Task<User?> GetByUsernameOrEmailAsync(string username, string email);
         Task<User?> GetByEmailAsync(string email);
         Task<User?> GetDetailsAsync(long id);
+        void UpdateDetails(User user);
     }
 }

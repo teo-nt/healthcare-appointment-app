@@ -75,5 +75,14 @@ namespace HealthcareAppointmentApp.Repositories
             if (!EncryptionUtil.IsValidPassword(password, user.Password)) return null;
             return user;
         }
+
+        /// <summary>
+        /// Updates a <see cref="User"/> and its navigation properties.
+        /// </summary>
+        /// <param name="user">The user to be updated.</param>
+        public void UpdateDetails(User user)
+        {
+            _context.Users.Update(user);
+        }
     }
 }
