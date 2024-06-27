@@ -44,7 +44,7 @@ namespace HealthcareAppointmentApp.Service
                 if (timeslots.Any())
                 {
                     throw new DayAvailabilityAlreadyInsertedException
-                        ($"Availability for date: {dto.Date} has been already added for doctor with id: {userDoctor.Doctor.Id}");
+                        ($"Availability for date: {dto.Date} has been already added");
                 }
                 for (var t = dto.StartTime; t.AddMinutes(duration) <= dto.EndTime; t = t.AddMinutes(duration))
                 {
@@ -64,7 +64,7 @@ namespace HealthcareAppointmentApp.Service
             }
             catch (Exception e) when (e is UserNotFoundException || e is DayAvailabilityAlreadyInsertedException) 
             {
-                _logger.LogWarning($"Error at adding availability -- {e.Message}");
+                _logger.LogWarning($"Error at adding availability for doctor with user id: {id} -- {e.Message}");
                 throw;
             }        
         }
