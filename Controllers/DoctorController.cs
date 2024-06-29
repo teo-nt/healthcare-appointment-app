@@ -21,8 +21,46 @@ namespace HealthcareAppointmentApp.Controllers
             _validator = validator;
         }
 
+        [HttpGet("timeslots")]
+        [Authorize(Roles = "Doctor")]
+        [SwaggerOperation(Summary = "Gets all timeslots for logged in doctor",
+                Description = "Only users logged in as doctors have access.")]
+        [ProducesResponseType(typeof(IList<AvailableTimeslotDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<IList<AvailableTimeslotDTO>>> GetTimeSlots()
+        {
+            var timeslots = await _applicationService.DoctorService.GetTimeslotsByUserId(AppUser!.Id);
+            IList<AvailableTimeslotDTO> timeslotsToReturn = [];
+            foreach (var timeslot in timeslots)
+            {
+                timeslotsToReturn.Add(_mapper.Map<AvailableTimeslotDTO>(timeslot));
+            }
+            return Ok(timeslotsToReturn);
+        }
+
+        [HttpGet("availability/{id}")]
+        [Authorize]
+        [SwaggerOperation(Summary = "Gets all future available timeslots for a doctor by doctor id",
+                Description = "Only authorized users have access.")]
+        [ProducesResponseType(typeof(IList<AvailableTimeslotDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IList<AvailableTimeslotDTO>>> GetAvailableFutureTimeslots(long id)
+        {
+            var timeslots = await _applicationService.DoctorService.GetFutureAvailableTimeslotsByDoctorId(id);
+            IList<AvailableTimeslotDTO> timeslotsToReturn = [];
+            foreach (var timeslot in timeslots)
+            {
+                timeslotsToReturn.Add(_mapper.Map<AvailableTimeslotDTO>(timeslot));
+            }
+            return Ok(timeslotsToReturn);
+        }
+
         [HttpPost("availability")]
         [Authorize(Roles = "Doctor")]
+        [SwaggerOperation(Summary = "Doctors can add availability specifying a date and timespan.",
+            Description = "Timeslots will be created depending on the appointment duration they have defined at registration.")]
         [ProducesResponseType(typeof(IList<AvailableTimeslotDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -41,24 +79,6 @@ namespace HealthcareAppointmentApp.Controllers
             }
 
             var timeslots = await _applicationService.DoctorService.AddAvailabilityAsync(dto, AppUser!.Id);
-            IList<AvailableTimeslotDTO> timeslotsToReturn = [];
-            foreach (var timeslot in timeslots)
-            {
-                timeslotsToReturn.Add(_mapper.Map<AvailableTimeslotDTO>(timeslot));
-            }
-            return Ok(timeslotsToReturn);
-        }
-
-        [HttpGet("timeslots")]
-        [Authorize(Roles = "Doctor")]
-        [SwaggerOperation(Summary = "Gets all timeslots for logged in doctor",
-                Description = "Only users logged in as doctors have access.")]
-        [ProducesResponseType(typeof(IList<AvailableTimeslotDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<IList<AvailableTimeslotDTO>>> GetTimeSlots()
-        {
-            var timeslots = await _applicationService.DoctorService.GetTimeslotsByUserId(AppUser!.Id);
             IList<AvailableTimeslotDTO> timeslotsToReturn = [];
             foreach (var timeslot in timeslots)
             {

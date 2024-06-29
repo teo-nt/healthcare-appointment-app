@@ -23,6 +23,9 @@ namespace HealthcareAppointmentApp.Controllers
         }
 
         [HttpPost("register-doctor")]
+        [SwaggerOperation(Summary = "Sign up as a doctor")]
+        [ProducesResponseType(typeof(DoctorReadOnlyDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<DoctorReadOnlyDTO>> SignUpDoctor(DoctorSignUpDTO signUpDTO)
         {
             if (!ModelState.IsValid)
@@ -43,6 +46,9 @@ namespace HealthcareAppointmentApp.Controllers
         }
 
         [HttpPost("register-patient")]
+        [SwaggerOperation(Summary = "Sign up as a patient")]
+        [ProducesResponseType(typeof(PatientReadOnlyDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<PatientReadOnlyDTO>> SignUpPatient(PatientSignUpDTO signUpDTO)
         {
             if (!ModelState.IsValid)
@@ -65,6 +71,10 @@ namespace HealthcareAppointmentApp.Controllers
         }
 
         [HttpPost("login")]
+        [SwaggerOperation(Summary = "Logins a user returning a JWT")]
+        [ProducesResponseType(typeof(JwtTokenDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status423Locked)]
         public async Task<ActionResult<JwtTokenDTO>> Login(LoginDTO loginDTO)
         {
             var user = await _applicationService.UserService.LoginUserAsync(loginDTO);
@@ -107,8 +117,8 @@ namespace HealthcareAppointmentApp.Controllers
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Get all users with their details", Description = "Only admins have access.")]
         [ProducesResponseType(typeof(IList<UserDetailsDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IList<UserDetailsDTO>>> GetAllUsersDetails()
         {
             var users = await _applicationService.UserService.GetAllUsersAsync();
@@ -122,6 +132,12 @@ namespace HealthcareAppointmentApp.Controllers
 
         [HttpGet("details/{id}")]
         [Authorize]
+        [SwaggerOperation(Summary = "Get a user with details (doctor or patient)", 
+            Description = "Only authorized users have access and can see their account details only. Admins can see everyone.")]
+        [ProducesResponseType(typeof(UserDetailsDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserDetailsDTO>> GetUserDetails(long id)
         {
             if (AppUser!.Role != "Admin" && id != AppUser.Id) throw new ForbiddenActionException("This action is not allowed");
@@ -135,7 +151,8 @@ namespace HealthcareAppointmentApp.Controllers
         [SwaggerOperation(Summary = "Update a user's email and password", Description = "Only authorized users can access it. Admins can update everyone." +
             "Patients and doctors can only update their account.")]
         [ProducesResponseType(typeof(UserReadOnlyDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserReadOnlyDTO>> UpdateEmailAndPassword(UserUpdatePasswordEmailDTO dto)
@@ -153,7 +170,7 @@ namespace HealthcareAppointmentApp.Controllers
         [Authorize]
         [SwaggerOperation(Summary = "Update a user details (either doctor or patient)", Description = "Only authorized users can access it.")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateUserDetails(UserDetailsDTO dto)
@@ -166,8 +183,8 @@ namespace HealthcareAppointmentApp.Controllers
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Enable a user account by id")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> EnableAccount(long id)
@@ -180,8 +197,8 @@ namespace HealthcareAppointmentApp.Controllers
         [Authorize(Roles = "Admin")]
         [SwaggerOperation(Summary = "Disable a user account by id")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status423Locked)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DisableAccount(long id)
@@ -195,7 +212,7 @@ namespace HealthcareAppointmentApp.Controllers
         [SwaggerOperation(Summary = "Delete a user by ID", Description = "Only authorized users can access it. Admins can delete everyone." +
             "Patients and doctors can only delete their account.")]
         [ProducesResponseType(typeof(UserReadOnlyDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<UserReadOnlyDTO>> DeleteUserById(long id)
