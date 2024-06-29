@@ -1,4 +1,5 @@
 ﻿using HealthcareAppointmentApp.Data;
+using HealthcareAppointmentApp.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HealthcareAppointmentApp.Repositories
@@ -19,10 +20,19 @@ namespace HealthcareAppointmentApp.Repositories
             return await _context.Doctors.Where(d => d.City == city).ToListAsync();
         }
 
+        /// <summary>
+        /// Gets all active doctors by city and speciality.
+        /// </summary>
+        /// <param name="city">The city of doctor.</param>
+        /// <param name="speciality">The speciality of doctor.</param>
+        /// <returns>An <see cref="IEnumerable{Doctor}"/> that satisfy the criteria.</returns>
         public async Task<IEnumerable<Doctor>> GetDoctorsByCityAndSpeciality(string city, string speciality)
         {
             return await _context.Doctors
-                .Where(d => d.City == city && d.Speciality != null && d.Speciality.SpecialityName == speciality)
+                .Where(d => d.User.Status == UserStatus.Approved &&
+                        d.City == city && d.Speciality != null && 
+                        d.Speciality.SpecialityName == speciality)
+                .Include(d => d.Speciality)
                 .ToListAsync();
         }
 

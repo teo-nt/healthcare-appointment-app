@@ -3,6 +3,7 @@ using HealthcareAppointmentApp.DTO;
 using HealthcareAppointmentApp.Models;
 using HealthcareAppointmentApp.Repositories;
 using HealthcareAppointmentApp.Service.Exceptions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HealthcareAppointmentApp.Service
 {
@@ -67,6 +68,29 @@ namespace HealthcareAppointmentApp.Service
                 _logger.LogWarning($"Error at adding availability for doctor with user id: {id} -- {e.Message}");
                 throw;
             }        
+        }
+
+        /// <summary>
+        /// Retrieve doctors by speciality and city.
+        /// </summary>
+        /// <param name="dto">Contains speciality and city fields.</param>
+        /// <returns><see cref="IEnumerable{Doctor}"/></returns>
+        /// <exception cref="Exceptions.DoctorNotFoundException">If no doctors are found with these criteria.</exception> 
+        public async Task<IEnumerable<Doctor>> GetBySpecialityAndCity(DoctorRequestDTO dto)
+        {
+            try
+            {
+                var doctors = await _unitOfWork.DoctorRepository.GetDoctorsByCityAndSpeciality(dto.City, dto.Speciality);
+                if (doctors.IsNullOrEmpty()) 
+                    throw new DoctorNotFoundException($"Doctors with speciality: {dto.Speciality} at city: {dto.City} were not found");
+                _logger.LogInformation($"Doctors with speciality: {dto.Speciality} at city: {dto.City} were retrieved");
+                return doctors;
+            }
+            catch (Exception e) when (e is DoctorNotFoundException)
+            {
+                _logger.LogWarning($"Error getting doctors -- {e.Message}");
+                throw;
+            }      
         }
 
         /// <summary>

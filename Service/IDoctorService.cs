@@ -7,5 +7,6 @@ namespace HealthcareAppointmentApp.Service
     {
         Task<IList<TimeSlot>> AddAvailabilityAsync(AvailabilityInsertDTO dto, long id);
         Task<IEnumerable<TimeSlot>> GetTimeslotsByUserId(long userId);
+        Task<IEnumerable<Doctor>> GetBySpecialityAndCity(DoctorRequestDTO dto);
     }
 }
