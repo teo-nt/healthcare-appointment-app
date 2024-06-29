@@ -93,6 +93,23 @@ namespace HealthcareAppointmentApp.Service
             }      
         }
 
+        public async Task<IEnumerable<TimeSlot>> GetFutureAvailableTimeslotsByDoctorId(long doctorId)
+        {
+            try
+            {
+                var timeslots = await _unitOfWork.DoctorRepository.GetFutureAvailableTimeslotsByDoctorId(doctorId);
+                if (timeslots.IsNullOrEmpty()) 
+                    throw new TimeslotNotFoundException($"No future available timeslots were found for doctor with id: {doctorId}");
+                _logger.LogInformation($"Future available timeslots for doctor with id: {doctorId} were retrieved");
+                return timeslots;
+            }
+            catch (Exception e) when (e is TimeslotNotFoundException)
+            {
+                _logger.LogWarning($"Error getting timeslots -- {e.Message}");
+                throw;
+            }     
+        }
+
         /// <summary>
         /// Gets all timeslots for a user who must be a doctor.
         /// </summary>

@@ -50,6 +50,19 @@ namespace HealthcareAppointmentApp.Repositories
         }
 
         /// <summary>
+        /// Gets all future available timeslots by doctor id.
+        /// </summary>
+        /// <param name="id">The id of doctor.</param>
+        /// <returns>An <see cref="IEnumerable{TimeSlot}"/>.</returns>
+        public async Task<IEnumerable<TimeSlot>> GetFutureAvailableTimeslotsByDoctorId(long id)
+        {
+            return await _context.TimeSlots.Where(t => t.DoctorId == id 
+                                                && t.Status == AvailabilityStatus.Available
+                                                && t.Date > DateOnly.FromDateTime(DateTime.Now))
+                .ToListAsync();
+        }
+
+        /// <summary>
         /// Gets all timeslots for a specific doctor.
         /// </summary>
         /// <param name="id">The id of doctor.</param>

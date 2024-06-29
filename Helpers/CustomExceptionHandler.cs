@@ -23,6 +23,7 @@ namespace HealthcareAppointmentApp.Helpers
                 UserAlreadyExistsException => (int)HttpStatusCode.BadRequest,
 
                 DoctorNotFoundException or
+                TimeslotNotFoundException or
                 UserNotFoundException => (int)HttpStatusCode.NotFound,
                 ForbiddenActionException => (int)HttpStatusCode.Forbidden,
                 AccountDisabledException => (int)HttpStatusCode.Locked,

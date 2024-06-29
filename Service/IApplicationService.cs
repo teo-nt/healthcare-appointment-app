@@ -4,5 +4,6 @@
     {
         IUserService UserService { get; }
         IDoctorService DoctorService { get; }
+        IAppointmentService AppointmentService { get; }
     }
 }

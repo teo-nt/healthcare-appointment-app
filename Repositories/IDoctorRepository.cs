@@ -10,5 +10,6 @@ namespace HealthcareAppointmentApp.Repositories
         Task<IEnumerable<Doctor>> GetDoctorsByCityAndSpeciality(string city, string speciality);
         Task<Doctor?> GetDoctorByPhoneNumber(string phoneNumber);
         Task<IEnumerable<TimeSlot>> GetTimeSlots(long id);
+        Task<IEnumerable<TimeSlot>> GetFutureAvailableTimeslotsByDoctorId(long id);
     }
 }
