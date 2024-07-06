@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HealthcareAppointmentApp.Data;
 using HealthcareAppointmentApp.DTO;
 using HealthcareAppointmentApp.Models;
 using HealthcareAppointmentApp.Service;
@@ -31,6 +32,24 @@ namespace HealthcareAppointmentApp.Controllers
             var appointment = await _applicationService.AppointmentService.BookAppointment(dto);
             AppointmentReadOnlyDTO appointmentToReturn = _mapper.Map<AppointmentReadOnlyDTO>(appointment);
             return Ok(appointmentToReturn);
+        }
+
+        [HttpGet("my-appointments")]
+        [Authorize(Roles = "Patient, Doctor")]
+        [SwaggerOperation(Summary = "Gets all appointments for logged in user",
+            Description = "Only Doctors and Patients have access.")]
+        [ProducesResponseType(typeof(IList<AppointmentReadOnlyDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<IList<AppointmentReadOnlyDTO>>> GetAppointmentsWithUserDetails()
+        {
+            var appointments = await _applicationService.AppointmentService.GetAppointments(AppUser!.Id);
+            IList<AppointmentReadOnlyDTO> appointmentsToReturn = [];
+            foreach (var appointment in appointments)
+            {
+                appointmentsToReturn.Add(_mapper.Map<Appointment, AppointmentReadOnlyDTO>(appointment));
+            }
+            return Ok(appointmentsToReturn);
         }
     }
 }

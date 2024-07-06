@@ -6,5 +6,6 @@ namespace HealthcareAppointmentApp.Service
     public interface IAppointmentService
     {
         Task<Appointment> BookAppointment(AppointmentRequestDTO dto);
+        Task<IEnumerable<Appointment>> GetAppointments(long userId);
     }
 }

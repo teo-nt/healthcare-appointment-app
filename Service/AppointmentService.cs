@@ -52,5 +52,30 @@ namespace HealthcareAppointmentApp.Service
                 throw;
             }
         }
+
+        public async Task<IEnumerable<Appointment>> GetAppointments(long userId)
+        {
+            IEnumerable<Appointment> appointments = [];
+
+            try
+            {
+                User? user = await _unitOfWork.UserRepository.GetDetailsAsync(userId);
+                if (user is null) throw new UserNotFoundException($"User with id: {userId} was not found");
+                
+                appointments = user.UserRole switch
+                {
+                    UserRole.Doctor => await _unitOfWork.AppointmentRepository.GetDoctorAppointments(user.Doctor!.Id),
+                    UserRole.Patient => await _unitOfWork.AppointmentRepository.GetPatientAppointments(user.Patient!.Id),
+                    _ => throw new ForbiddenActionException($"Role is not valid for this action")
+                };
+                _logger.LogInformation($"Appointments for user with id: {userId} were retrieved");
+                return appointments;
+            }
+            catch (Exception e) when (e is UserNotFoundException or ForbiddenActionException)
+            {
+                _logger.LogWarning($"Error getting appointments -- {e.Message}");
+                throw;
+            }
+        }
     }
 }
