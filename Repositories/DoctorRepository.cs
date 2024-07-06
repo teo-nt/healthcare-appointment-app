@@ -56,9 +56,12 @@ namespace HealthcareAppointmentApp.Repositories
         /// <returns>An <see cref="IEnumerable{TimeSlot}"/>.</returns>
         public async Task<IEnumerable<TimeSlot>> GetFutureAvailableTimeslotsByDoctorId(long id)
         {
+            var now = DateTime.Now;
+            var today = DateOnly.FromDateTime(now);
+            var currentTime = TimeOnly.FromDateTime(now);
             return await _context.TimeSlots.Where(t => t.DoctorId == id 
                                                 && t.Status == AvailabilityStatus.Available
-                                                && t.Date > DateOnly.FromDateTime(DateTime.Now))
+                                                && (t.Date > today || (t.Date == today && t.StartTimeSlot > currentTime)))
                 .ToListAsync();
         }
 
